@@ -17,15 +17,21 @@ export async function loginAction(formData: FormData) {
        where: { email: email.trim().toLowerCase() }
     });
 
-    if (user || (email === "khawla@freelance.ma" && password === "admin")) {
+    // Récupérer les identifiants administrateur super-sécurisés depuis Vercel
+    const adminEmail = process.env.ADMIN_EMAIL || "khawla@freelance.ma";
+    const adminPassword = process.env.ADMIN_PASSWORD || "admin";
+
+    const isAdmin = (email === adminEmail && password === adminPassword);
+
+    if (user || isAdmin) {
       const cookieStore = await cookies();
       cookieStore.set("auth_session", user?.id || "demo_admin_id", { 
          httpOnly: true,
-         maxAge: 60 * 60 * 24 * 7 // 1 semaine
+         maxAge: 60 * 60 * 24 * 7 // 1 semaine,
       });
       redirect("/"); // Redirection vers le dashboard
     } else {
-      return { error: "Identifiants incorrects. Indice: khawla@freelance.ma / admin" };
+      return { error: "Identifiants incorrects. Accès privé uniquement." };
     }
   }
   
