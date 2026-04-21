@@ -1,0 +1,80 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id             String             @id @default(cuid())
+  email          String             @unique
+  name           String?
+  whatsappToken  String? // Token d'accès Meta/Twilio
+  whatsappPhoneId String? // ID du numéro de téléphone
+  stores         Store[]
+  templates      WhatsAppTemplate[]
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+}
+
+model Store {
+  id          String   @id @default(cuid())
+  name        String
+  platform    String // e.g., "SHOPIFY", "YOUCAN"
+  domain      String? // e.g., ma-boutique.myshopify.com
+  accessToken String? // Token d'accès Admin pour l'auto-configuration
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  orders      Order[]
+  createdAt   DateTime @default(now())
+}
+
+model Customer {
+  id     String  @id @default(cuid())
+  phone  String  @unique
+  name   String?
+  city   String?
+  orders Order[]
+}
+
+model Order {
+  id          String          @id @default(cuid())
+  externalId  String? // ID from Shopify/YouCan
+  totalAmount Float
+  status      String          @default("PENDING") // PENDING, CONFIRMED, CANCELLED, SHIPPED
+  storeId     String
+  store       Store           @relation(fields: [storeId], references: [id])
+  customerId  String
+  customer    Customer        @relation(fields: [customerId], references: [id])
+  validations ValidationLog[]
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+}
+
+model ValidationLog {
+  id               String    @id @default(cuid())
+  orderId          String
+  order            Order     @relation(fields: [orderId], references: [id])
+  messageSent      String
+  responseReceived String?
+  sentAt           DateTime  @default(now())
+  repliedAt        DateTime?
+}
+
+model WhatsAppTemplate {
+  id        String   @id @default(cuid())
+  name      String
+  trigger   String // ex: "ON_NEW_ORDER", "AFTER_15_MIN", "MANUAL"
+  body      String
+  button1   String?
+  button2   String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
