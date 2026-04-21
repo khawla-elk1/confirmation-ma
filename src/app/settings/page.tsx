@@ -7,5 +7,5 @@ export const dynamic = "force-dynamic";
 export default async function SettingsPage() {
   const user = await prisma.user.findFirst();
 
-  return <SettingsClient initialSettings={user} />;
+  return <SettingsClient initialSettings={user || undefined} />;
 }
