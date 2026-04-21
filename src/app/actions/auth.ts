@@ -12,26 +12,40 @@ export async function loginAction(formData: FormData) {
   
   // Simulation d'authentification basée sur notre Seeder
   if (email && password) {
-    // Vérifier en base
-    const user = await prisma.user.findFirst({
-       where: { email: email.trim().toLowerCase() }
-    });
-
-    // Récupérer les identifiants administrateur super-sécurisés depuis Vercel
+    // 1. Vérifier si c'est le compte Administrateur (Master Admin)
     const adminEmail = process.env.ADMIN_EMAIL || "khawla@freelance.ma";
     const adminPassword = process.env.ADMIN_PASSWORD || "admin";
-
     const isAdmin = (email === adminEmail && password === adminPassword);
 
-    if (user || isAdmin) {
+    if (isAdmin) {
       const cookieStore = await cookies();
-      cookieStore.set("auth_session", user?.id || "demo_admin_id", { 
+      cookieStore.set("auth_session", "master_admin_id", { 
          httpOnly: true,
          maxAge: 60 * 60 * 24 * 7 // 1 semaine,
       });
       redirect("/"); // Redirection vers le dashboard
-    } else {
-      return { error: "Identifiants incorrects. Accès privé uniquement." };
+    }
+
+    // 2. Sinon, essayer de vérifier dans la base de données (Prisma)
+    try {
+      const user = await prisma.user.findFirst({
+         where: { email: email.trim().toLowerCase() }
+      });
+
+      if (user) {
+        const cookieStore = await cookies();
+        cookieStore.set("auth_session", user.id, { 
+           httpOnly: true,
+           maxAge: 60 * 60 * 24 * 7 // 1 semaine,
+        });
+        redirect("/"); // Redirection vers le dashboard
+      }
+    } catch (e) {
+       console.error("Erreur de base de données (probablement SQLite sur Vercel):", e);
+    }
+
+    // Si on arrive ici, rien n'a fonctionné
+    return { error: "Identifiants incorrects ou base de données inaccessible. Accès privé uniquement." };
     }
   }
   
