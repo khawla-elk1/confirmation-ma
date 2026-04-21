@@ -2,14 +2,15 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Shield, Zap, QrCode as QrIcon, Smartphone, RefreshCw, CheckCircle } from 'lucide-react';
+import { Zap, Smartphone, RefreshCw, CheckCircle } from 'lucide-react';
 // Next.js Image component not needed here since we inject base64 text into img src directly
 
 interface SettingsProps {
-  initialSettings: any;
+  initialSettings?: Record<string, unknown>;
 }
 
-export default function SettingsClient({ initialSettings }: SettingsProps) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export default function SettingsClient({ initialSettings: _initialSettings }: SettingsProps) {
   const [waStatus, setWaStatus] = useState<"loading" | "qr" | "connected">("loading");
   const [qrCodeData, setQrCodeData] = useState<string | null>(null);
   const [statusMessage, setStatusMessage] = useState("Vérification de la passerelle WhatsApp...");
@@ -31,13 +32,14 @@ export default function SettingsClient({ initialSettings }: SettingsProps) {
         setWaStatus("loading");
         setStatusMessage(data.status || "Génération en cours...");
       }
-    } catch (err) {
+    } catch {
       setWaStatus("loading");
       setStatusMessage("Passerelle WhatsApp locale hors-ligne. (Avez-vous lancé node whatsappWorker.js ?)");
     }
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     checkWhatsAppStatus();
     const interval = setInterval(checkWhatsAppStatus, 3000);
     return () => clearInterval(interval);
@@ -82,7 +84,8 @@ export default function SettingsClient({ initialSettings }: SettingsProps) {
                    )}
                    {waStatus === "qr" && qrCodeData && (
                      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center gap-3 bg-white p-2 rounded-xl">
-                       <img src={qrCodeData} alt="WhatsApp QR Code" className="w-full h-full object-contain" />
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={qrCodeData} alt="WhatsApp QR Code" className="w-full h-full object-contain" />
                      </motion.div>
                    )}
                 </div>

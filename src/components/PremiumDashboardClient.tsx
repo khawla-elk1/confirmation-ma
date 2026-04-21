@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useLayoutEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   CheckCircle,
   Package,
@@ -60,8 +60,8 @@ interface DashboardData {
 export default function PremiumDashboardClient({ data }: { data: DashboardData }) {
   const [mounted, setMounted] = useState(false);
 
-  // eslint-disable-next-line react-hooks/set-state-in-effect
-  useLayoutEffect(() => {
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
   }, []);
 
@@ -222,7 +222,7 @@ export default function PremiumDashboardClient({ data }: { data: DashboardData }
             <div className="p-0 space-y-0 flex-1 overflow-y-auto mt-2">
                 {data.recentOrders.length === 0 ? (
                    <p className="text-sm text-slate-500 font-medium text-center py-16">Aucune commande. Naviguez vers /api/seed pour initialiser.</p>
-                ) : data.recentOrders.map((order: any, i: number) => (
+                ) : data.recentOrders.map((order, i) => (
                   <motion.div 
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}

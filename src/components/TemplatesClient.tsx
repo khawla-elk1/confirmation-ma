@@ -2,10 +2,17 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { MessageCircle, Code, Save, Play, Bot, Smartphone, RefreshCw } from 'lucide-react';
+import { Save, Bot, RefreshCw } from 'lucide-react';
 import { saveTemplate } from '@/app/actions/template';
 
-export default function TemplatesClient({ initialTemplate }: { initialTemplate: any }) {
+interface TemplateData {
+  trigger?: string;
+  body?: string;
+  button1?: string;
+  button2?: string;
+}
+
+export default function TemplatesClient({ initialTemplate }: { initialTemplate: TemplateData | null }) {
   const [trigger, setTrigger] = useState(initialTemplate?.trigger || "ON_NEW_ORDER");
   const [body, setBody] = useState(
     initialTemplate?.body || "Bonjour {client_nom} ! 👋\n\nMerci d'avoir passé commande sur notre boutique.\nNous avons bien reçu votre demande pour le produit : {produit_nom}.\nSuper Nouvelle ! La livraison est GRATUITE. 🚚\n\nSouhaitez-vous confirmer l'expédition pour la recevoir demain ?"
@@ -110,7 +117,7 @@ export default function TemplatesClient({ initialTemplate }: { initialTemplate: 
                       </div>
                       
                       <div>
-                        <label className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 block">Boutons d'Action Rapide / Réponses Attendues</label>
+                        <label className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 block">Boutons d&apos;Action Rapide / Réponses Attendues</label>
                         <div className="flex gap-4">
                            <div className="flex-1 bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-1 relative">
                               <input 
@@ -153,7 +160,7 @@ export default function TemplatesClient({ initialTemplate }: { initialTemplate: 
 
                    <div className="flex-1 bg-[#efeae2]/5 p-4 space-y-4 overflow-y-auto">
                       <div className="flex justify-center">
-                         <span className="px-3 py-1 bg-black/40 rounded-lg text-[10px] text-white/50">Aujourd'hui</span>
+                         <span className="px-3 py-1 bg-black/40 rounded-lg text-[10px] text-white/50">Aujourd&apos;hui</span>
                       </div>
                       <div className="bg-[#202c33] p-3 rounded-2xl rounded-tl-none max-w-[85%] text-sm text-[#e9edef] shadow-md border border-white/5 leading-relaxed">
                          {previewBody}

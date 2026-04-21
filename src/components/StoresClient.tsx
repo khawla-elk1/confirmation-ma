@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Store, Plus, ExternalLink, RefreshCw, ShoppingCart, AlertCircle, X, Trash2, CheckCircle, Zap } from 'lucide-react';
+import { Plus, ExternalLink, RefreshCw, ShoppingCart, AlertCircle, X, Trash2, CheckCircle, Zap } from 'lucide-react';
 import { addStore, deleteStore } from '@/app/actions/store';
 
 interface StoreData {

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { cookies } from "next/headers";
 import "./globals.css";
 import AppLayout from "@/components/AppLayout";
 
@@ -10,15 +11,22 @@ export const metadata: Metadata = {
   description: "Solution simple et efficace pour la validation des commandes e-commerce au Maroc.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const cookieStore = await cookies();
+  const session = cookieStore.get("auth_session")?.value;
+
   return (
     <html lang="fr" className="antialiased" suppressHydrationWarning>
       <body className={inter.className}>
-        <AppLayout>{children}</AppLayout>
+        {session ? (
+          <AppLayout>{children}</AppLayout>
+        ) : (
+          children
+        )}
       </body>
     </html>
   );

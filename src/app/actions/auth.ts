@@ -46,7 +46,6 @@ export async function loginAction(formData: FormData) {
 
     // Si on arrive ici, rien n'a fonctionné
     return { error: "Identifiants incorrects ou base de données inaccessible. Accès privé uniquement." };
-    }
   }
   
   return { error: "Veuillez remplir tous les champs." };

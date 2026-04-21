@@ -6,7 +6,8 @@ export async function sendWhatsAppMessage(
   token: string,   // Not used but kept for interface compat
   to: string,
   templateName: string,
-  languageCode: string = "fr",
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _languageCode: string = "fr",
   bodyText: string
 ) {
   const workerUrl = process.env.NEXT_PUBLIC_WORKER_URL || "http://localhost:3001";
